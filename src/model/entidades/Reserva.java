@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
+import model.excecoes.ExcecaoDominio;
+
 public class Reserva {
 	
 	private Integer numeroQuarto;
@@ -12,7 +14,12 @@ public class Reserva {
 	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 	
-	public Reserva(Integer numeroQuarto, Date checkIn, Date checkOut) {
+		public Reserva(Integer numeroQuarto, Date checkIn, Date checkOut)  {
+		
+		if(!checkOut.after(checkIn)) {
+			throw new ExcecaoDominio("A data de checkOut deve ser depois da data de checkIn.");
+		}
+		
 		this.numeroQuarto = numeroQuarto;
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
@@ -36,19 +43,19 @@ public class Reserva {
 		return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS);
 	}
 	
-	public String atualizarDatas(Date checkIn, Date checkOut) {
+	public void atualizarDatas(Date checkIn, Date checkOut)  {
 		
 		Date now = new Date();
 			if (checkIn.before(now) || checkOut.before(now)) {
-			return "As datas de reserva devem ser futuras as atuais.";
+				throw new ExcecaoDominio("As datas de reserva devem ser futuras as atuais."); // excessao usada quando os argumentos passados para um  método são inválidos
 		}
 			if(!checkOut.after(checkIn)) {
-			return "A data de checkOut deve ser depois da data de checkIn.";
+				throw new ExcecaoDominio("A data de checkOut deve ser depois da data de checkIn.");
 		}
 		
 		this.checkIn = checkIn;
 		this.checkOut = checkOut;
-		return null;
+		
 	}
 	
 	@Override

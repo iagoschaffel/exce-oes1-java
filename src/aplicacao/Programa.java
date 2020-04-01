@@ -6,25 +6,23 @@ import java.util.Date;
 import java.util.Scanner;
 
 import model.entidades.Reserva;
+import model.excecoes.ExcecaoDominio;
 
 public class Programa {
 
-	public static void main(String[] args) throws ParseException {
+	public static void main(String[] args)  {
 		
 		Scanner teclado = new Scanner(System.in);
 		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 		
-		System.out.println("Numero do quarto: ");
-		int numeroQuarto = teclado.nextInt();
-		System.out.println("Informe a data de checkIn(dd/MM/yyyy): ");
-		Date checkIn = sdf.parse(teclado.next());
-		System.out.println("Informe a data de checkOut(dd/MM/yyyy): ");
-		Date checkOut = sdf.parse(teclado.next());
-		
-		if(!checkOut.after(checkIn)) { //verificar se a data é anterior a outra
-			System.out.println("Erro na reserva. A data de checkOut deve ser depois da data de checkIn.");
-		}
-		else {
+		try {
+			System.out.println("Numero do quarto: ");
+			int numeroQuarto = teclado.nextInt();
+			System.out.println("Informe a data de checkIn(dd/MM/yyyy): ");
+			Date checkIn = sdf.parse(teclado.next());
+			System.out.println("Informe a data de checkOut(dd/MM/yyyy): ");
+			Date checkOut = sdf.parse(teclado.next());
+			
 			Reserva reserva = new Reserva(numeroQuarto, checkIn, checkOut);
 			System.out.println("Reserva: " + reserva);
 			System.out.println();
@@ -35,14 +33,17 @@ public class Programa {
 			System.out.println("Informe a data de checkOut(dd/MM/yyyy): ");
 			checkOut = sdf.parse(teclado.next());
 			
-			String erro = reserva.atualizarDatas(checkIn, checkOut);
-			if (erro != null) {
-				System.out.println("Erro na reserva: " + erro);
-			}
-			else {
-				System.out.println("Reserva: " + reserva);
+			reserva.atualizarDatas(checkIn, checkOut);
+			
+			System.out.println("Reserva: " + reserva);
+	
 		}
-	}
+		catch(ParseException e) {
+			System.out.println("Data inválida");
+		}
+		catch(ExcecaoDominio e) {
+			System.out.println("Erro na reserva: " + e.getMessage());
+		}
 		
 		teclado.close();
 	}
